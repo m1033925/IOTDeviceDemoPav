@@ -4,20 +4,79 @@
 # https://aka.ms/yaml
 
 trigger:
-- master
+  branches:
 
-pool:
-  vmImage: ubuntu-latest
+
+
+
+
+    include:
+
+
+
+
+
+      - azure-pipelines 
 
 steps:
-- task: Docker@2
+
+
+
+- task: UseDotNet@2
+
   inputs:
-    repository: 'dockersvc'
-    command: 'buildAndPush'
-    Dockerfile: '**/Dockerfile'
+
+    packageType: 'sdk'
+
+    version: 
+
+
+
+- task: DotNetCoreCLI@2
+
+  inputs:
+
+    command: 'restore'
+
+    projects: '**/*.csproj'
+
+    feedsToUse: 'select'
+
+
+
+- task: DotNetCoreCLI@2
+
+  inputs:
+
+    command: 'build'
+
+    projects: '**/*.csproj'
+
+    arguments: '--configuration $(BuildConfiguration)'
+
+
+
+
+
+- task: DotNetCoreCLI@2
+
+  inputs:
+
+    command: 'publish'
+
+    publishWebProjects: true
+
+    arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
+
+
+
     
-- task: PublishPipelineArtifact@1
+
+      
+
+- task: PublishBuildArtifacts@1
+
   inputs:
-     targetPath: '$(Pipeline.Workspace)'
-     artifact: 'buildArtifacts'
-     publishLocation: 'pipeline'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'paviart'
+    publishLocation: 'Container'
