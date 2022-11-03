@@ -1,0 +1,82 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+  branches:
+
+
+
+
+
+    include:
+
+
+
+
+
+      - azure-pipelines 
+
+steps:
+
+
+
+- task: UseDotNet@2
+
+  inputs:
+
+    packageType: 'sdk'
+
+    version: 
+
+
+
+- task: DotNetCoreCLI@2
+
+  inputs:
+
+    command: 'restore'
+
+    projects: '**/*.csproj'
+
+    feedsToUse: 'select'
+
+
+
+- task: DotNetCoreCLI@2
+
+  inputs:
+
+    command: 'build'
+
+    projects: '**/*.csproj'
+
+    arguments: '--configuration $(BuildConfiguration)'
+
+
+
+
+
+- task: DotNetCoreCLI@2
+
+  inputs:
+
+    command: 'publish'
+
+    publishWebProjects: true
+
+    arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
+
+
+
+    
+
+      
+
+- task: PublishBuildArtifacts@1
+
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'paviart'
+    publishLocation: 'Container'
